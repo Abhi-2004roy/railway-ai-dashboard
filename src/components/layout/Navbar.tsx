@@ -4,15 +4,27 @@ import { toast } from "react-hot-toast";
 
 interface NavbarProps {
   controller?: string;
+  onReset?: () => void;
+  onLogout?: () => void;
 }
 
-export const Navbar = ({ controller = "abhi" }: NavbarProps) => {
+export const Navbar = ({ controller = "abhi", onReset, onLogout }: NavbarProps) => {
   const handleReset = () => {
-    toast.success("System reset initiated");
+    if (onReset) {
+      onReset();
+      toast.success("System reset completed - all data cleared");
+    } else {
+      toast.success("System reset initiated");
+    }
   };
 
   const handleLogout = () => {
-    toast("Logging out...", { icon: "ℹ️" });
+    if (onLogout) {
+      onLogout();
+      toast.success("Logged out successfully");
+    } else {
+      toast("Logging out...", { icon: "ℹ️" });
+    }
   };
 
   return (

@@ -11,10 +11,12 @@ import { LoginForm } from "./components/auth/LoginForm";
 import { TrackDirection } from "./components/train/TrackDirection";
 import { TrainConfiguration } from "./components/train/TrainConfiguration";
 import { Dashboard } from "./components/dashboard/Dashboard";
+import { TrainControl } from "./components/train/TrainControl";
 import { SimpleAnalytics } from "./components/analytics/SimpleAnalytics";
 import { Settings } from "./components/settings/Settings";
 import { Navbar } from "./components/layout/Navbar";
 import { Sidebar } from "./components/layout/Sidebar";
+import { ThemeToggle } from "./components/ui/theme-toggle";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +53,18 @@ const App = () => {
     setSelectedDirection(null);
   };
 
+  const handleReset = () => {
+    setSelectedDirection(null);
+    setIsConfigured(false);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setController("");
+    setSelectedDirection(null);
+    setIsConfigured(false);
+  };
+
   // If not authenticated, show login
   if (!isAuthenticated) {
     return (
@@ -70,7 +84,7 @@ const App = () => {
         <TooltipProvider>
           <HotToaster position="top-right" />
           <div className="min-h-screen bg-background">
-            <Navbar controller={controller} />
+            <Navbar controller={controller} onReset={handleReset} onLogout={handleLogout} />
             <TrackDirection onDirectionSelect={handleDirectionSelect} />
           </div>
         </TooltipProvider>
@@ -85,7 +99,7 @@ const App = () => {
         <TooltipProvider>
           <HotToaster position="top-right" />
           <div className="min-h-screen bg-background">
-            <Navbar controller={controller} />
+            <Navbar controller={controller} onReset={handleReset} onLogout={handleLogout} />
             <TrainConfiguration
               direction={selectedDirection}
               onBack={handleBackToDirection}
@@ -108,18 +122,19 @@ const App = () => {
           <div className="min-h-screen bg-background flex">
             <Sidebar />
             <div className="flex-1 flex flex-col">
-              <Navbar controller={controller} />
+              <Navbar controller={controller} onReset={handleReset} onLogout={handleLogout} />
               <main className="flex-1">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/train-control" element={<Dashboard />} />
+                  <Route path="/train-control" element={<TrainControl />} />
                   <Route path="/analytics" element={<SimpleAnalytics />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
             </div>
+            <ThemeToggle />
           </div>
         </BrowserRouter>
       </TooltipProvider>
